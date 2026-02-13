@@ -4,7 +4,7 @@ import { notFound } from 'next/navigation';
 import Comments from "@/components/Comments";
 
 /**
- * 1. توليد المسارات الثابتة
+ * 1. توليد المسارات الثابتة (لأداء فائق السرعة)
  */
 export async function generateStaticParams() {
   const posts = getAllPostIds();
@@ -14,15 +14,20 @@ export async function generateStaticParams() {
 }
 
 /**
- * 2. توليد البيانات الوصفية (SEO)
+ * 2. توليد البيانات الوصفية (SEO) بشكل ديناميكي
  */
 export async function generateMetadata({ params }) {
   const { slug } = await params;
   try {
     const postData = await getPostData(slug);
     return {
-      title: `${postData.title} | ThinkCurb`,
-      description: postData.excerpt,
+      title: `${postData.title} | ThinkCurb Lab`,
+      description: postData.excerpt || "Engineering insights from ThinkCurb Lab.",
+      openGraph: {
+        title: postData.title,
+        description: postData.excerpt,
+        type: 'article',
+      },
     };
   } catch (e) {
     return { title: 'Post Not Found' };
@@ -30,7 +35,7 @@ export async function generateMetadata({ params }) {
 }
 
 /**
- * 3. المكون الرئيسي للمقال
+ * 3. المكون الرئيسي للمقال (The Technical Lab Aesthetic)
  */
 export default async function PostPage({ params }) {
   const { slug } = await params;
@@ -45,114 +50,96 @@ export default async function PostPage({ params }) {
   return (
     <article className="min-h-screen pb-32 animate-entry bg-white overflow-x-hidden selection:bg-blue-600 selection:text-white">
       
+      {/* التنسيقات الداخلية المخصصة للهوية البصرية */}
       <style dangerouslySetInnerHTML={{ __html: `
-        /* منع خروج النصوص والكلمات الطويلة */
         .prose-thinkcurb {
           word-wrap: break-word;
           overflow-wrap: break-word;
           max-width: 100%;
         }
 
-        /* ضبط حجم الخط الأساسي ليكون متزناً (Balanced) */
         .prose-thinkcurb p {
-          font-size: clamp(1.1rem, 1.8vw, 1.45rem); 
+          font-size: clamp(1.1rem, 1.8vw, 1.35rem); 
           line-height: 1.8;
-          color: #475569;
+          color: #334155;
           margin-bottom: 2.5rem;
           font-weight: 400;
-          max-width: 100%;
         }
-        body {margin-left: 5%;}
-        /* العناوين الفرعية: ضخمة بذكاء */
+
         .prose-thinkcurb h2 {
-          font-size: clamp(1.8rem, 4vw, 3rem);
-          font-weight: 800;
+          font-size: clamp(1.8rem, 4vw, 2.8rem);
+          font-weight: 900;
           color: #0f172a;
-          line-height: 1.2;
-          margin-top: 5rem;
+          line-height: 1.1;
+          margin-top: 6rem;
           margin-bottom: 2rem;
-          letter-spacing: -0.03em;
+          letter-spacing: -0.04em;
+          font-style: italic;
         }
 
-        /* تنسيق كود بايثون: إزالة المربعات والإطارات */
         .prose-thinkcurb pre {
-          margin: 3rem 0;
-          padding: 2rem !important;
-          font-size: clamp(0.85rem, 1.2vw, 1.05rem) !important;
-          border-radius: 1.25rem;
-          background: #fafff6 !important;
-          border: none !important; /* إزالة المربع/الإطار */
-          box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.1);
+          margin: 4rem 0;
+          padding: 2.5rem !important;
+          font-size: 0.95rem !important;
+          border-radius: 1.5rem;
+          background: #f8fafc !important;
+          border: 1px solid #f1f5f9 !important;
+          box-shadow: 0 10px 30px -10px rgba(0,0,0,0.05);
           overflow-x: auto;
-          position: relative;
-        }
-
-        .prose-thinkcurb pre code {
-          background: transparent !important;
-          border: none !important;
-          padding: 0 !important;
         }
 
         .prose-thinkcurb img {
-          max-width: 100%;
-          height: auto;
-          border-radius: 2rem;
-          margin: 4rem 0;
-        }
-
-        @media (max-width: 768px) {
-          .prose-thinkcurb p { font-size: 1.15rem; margin-bottom: 2rem; }
-          .prose-thinkcurb h2 { font-size: 1.75rem; }
-          .prose-thinkcurb pre { padding: 1.5rem !important; border-radius: 1rem; }
+          border-radius: 2.5rem;
+          margin: 5rem 0;
+          box-shadow: 0 30px 60px -20px rgba(0,0,0,0.1);
         }
       `}} />
 
-      {/* Header Section */}
-      <header className="pt-32 md:pt-48 pb-16 md:pb-24 border-b border-slate-50 mb-16 md:mb-24">
+      {/* Header: ضخم وجريء */}
+      <header className="pt-32 md:pt-48 pb-16 border-b border-slate-50 mb-20">
         <div className="max-w-[1400px] mx-auto px-6 md:px-12 lg:px-20">
           
           <Link 
             href="/" 
-            className="inline-flex items-center text-[10px] md:text-xs font-black text-blue-600 mb-12 hover:gap-3 transition-all uppercase tracking-[0.4em]"
+            className="inline-flex items-center text-[10px] font-black text-blue-600 mb-16 hover:pl-2 transition-all uppercase tracking-[0.5em]"
           >
-            ← Back to Engineering Hub
+            ← BACK_TO_LAB_HUB
           </Link>
           
-          <div className="flex flex-wrap items-center gap-4 mb-10">
-             <span className="px-4 py-1.5 rounded-full bg-slate-900 text-white text-[10px] md:text-xs font-black uppercase tracking-[0.2em]">
-               {postData.category || 'Research'}
+          <div className="flex items-center gap-4 mb-8">
+             <span className="px-3 py-1 bg-blue-600 text-white text-[10px] font-black uppercase tracking-widest">
+               {postData.category || 'Engineering'}
              </span>
-             <span className="text-slate-400 text-xs md:text-sm font-medium tracking-tight">
-               {postData.date} • {postData.readingTime || '5 min read'}
+             <span className="text-slate-400 text-xs font-mono">
+               {postData.date} • {postData.readingTime || '5m read'}
              </span>
           </div>
 
-          {/* العنوان الرئيسي: متجاوب ولا يخرج عن الشاشة */}
-          <h1 className="text-[10vw] md:text-[6vw] lg:text-7xl font-black leading-[1.1] mb-12 text-slate-900 tracking-tight break-words max-w-5xl">
+          <h1 className="text-[10vw] md:text-[7vw] lg:text-8xl font-black leading-[0.95] mb-12 text-slate-900 tracking-tighter break-words max-w-6xl italic">
             {postData.title}
           </h1>
 
-          <div className="flex items-center gap-6 pt-10 border-t border-slate-100">
-            <div className="w-12 h-12 md:w-14 md:h-14 rounded-full bg-blue-600 flex items-center justify-center text-white text-[10px] font-black shadow-lg">TC</div>
+          <div className="flex items-center gap-6 pt-12 border-t border-slate-100">
+            <div className="w-14 h-14 rounded-full bg-slate-900 flex items-center justify-center text-white text-[10px] font-black">TC</div>
             <div>
-              <p className="text-base md:text-xl font-bold text-slate-900 tracking-tight">{postData.author || "ThinkCurb Staff"}</p>
-              <p className="text-[10px] text-slate-400 font-bold uppercase tracking-[0.2em] mt-0.5">Intelligence Architect</p>
+              <p className="text-xl font-black text-slate-900 tracking-tight">{postData.author || "ThinkCurb Staff"}</p>
+              <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Lead Intelligence Architect</p>
             </div>
           </div>
         </div>
       </header>
 
-      {/* Article Content */}
+      {/* Body: محتوى المقال والتعليقات */}
       <div className="max-w-[1400px] mx-auto px-6 md:px-12 lg:px-20">
         <div 
-          className="prose-thinkcurb mb-32 max-w-4xl"
+          className="prose-thinkcurb mb-40 max-w-4xl"
           dangerouslySetInnerHTML={{ __html: postData.contentHtml }} 
         />
         
-        {/* Comments Section */}
-        <div className="max-w-4xl pt-20 border-t border-slate-50">
+        <section className="max-w-4xl pt-24 border-t border-slate-100">
+           <h3 className="text-2xl font-black mb-12 italic tracking-tight">Lab Discussion_</h3>
            <Comments />
-        </div>
+        </section>
       </div>
     </article>
   );

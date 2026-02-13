@@ -5,8 +5,7 @@ import { remark } from 'remark';
 import html from 'remark-html';
 
 // تحديد المسار لمجلد content في جذر المشروع
-const postsDirectory = path.join(process.cwd(), 'content');
-
+const postsDirectory = path.join(process.cwd(), 'content', 'posts');
 /**
  * 1. جلب جميع المقالات مرتبة حسب التاريخ
  * تُستخدم في الصفحة الرئيسية (Home) وصفحة الأرشيف
