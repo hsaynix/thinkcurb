@@ -1,0 +1,60 @@
+/* src/app/globals.css */
+
+/* في Tailwind v4، نستخدم استيراداً واحداً بدلاً من التوجيهات الثلاثة القديمة */
+@import "tailwindcss";
+
+:root {
+  --background: #fdfcfb;
+  --foreground: #1a1a1a;
+  --accent: #2563eb;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: 'Inter', -apple-system, sans-serif;
+}
+
+/* حل مشكلة الـ Unknown Utility: تأكد من استخدام الكلاسات داخل @layer */
+@layer base {
+  a {
+    /* ملاحظة: في v4 يفضل كتابة الخصائص مباشرة إذا فشل الـ apply */
+    transition-property: all;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 200ms;
+  }
+}
+
+@layer components {
+  .prose {
+    max-width: none;
+  }
+
+  .prose p {
+    line-height: 1.8;
+    margin-bottom: 1.5rem;
+  }
+
+  .prose h1, .prose h2, .prose h3 {
+    font-family: var(--font-inter), sans-serif;
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    margin-top: 3rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .prose pre {
+    background-color: #f9fafb;
+    border: 1px solid #f3f4f6;
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    overflow-x: auto;
+  }
+}
