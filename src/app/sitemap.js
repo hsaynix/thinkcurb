@@ -1,25 +1,26 @@
-import { getSortedPostsData } from '@/lib/posts';
+// app/sitemap.js
+import { getSortedPostsData } from '../lib/posts'; // افترضنا أن لديك دالة لجلب المقالات
+
+const URL = "https://thinkcurb-blog.vercel.app";
 
 export default async function sitemap() {
-  const baseUrl = "https://thinkcurb.com"; // استبدله برابط موقعك الحقيقي لاحقاً
-
-  // 1. جلب روابط المقالات ديناميكياً
-  const posts = getSortedPostsData().map((post) => ({
-    url: `${baseUrl}/blog/${post.id}`,
-    lastModified: new Date(),
-    changeFrequency: 'weekly',
-    priority: 0.7,
+  // 1. جلب مسارات المقالات من ملفات Markdown
+  const posts = getSortedPostsData();
+  
+  const blogPosts = posts.map((post) => ({
+    url: `${URL}/posts/${post.id}`,
+    lastModified: post.date,
+    changeFrequency: 'monthly',
+    priority: 0.8,
   }));
 
-  // 2. تحديد الصفحات الثابتة (القانونية والرئيسية)
-  const routes = ['', '/about', '/contact', '/privacy', '/terms'].map(
-    (route) => ({
-      url: `${baseUrl}${route}`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: route === '' ? 1 : 0.5, // الصفحة الرئيسية لها أعلى أولوية
-    })
-  );
+  // 2. الصفحات الرئيسية
+  const routes = ['', '/about', '/categories'].map((route) => ({
+    url: `${URL}${route}`,
+    lastModified: new Date().toISOString(),
+    changeFrequency: 'daily',
+    priority: 1.0,
+  }));
 
-  return [...routes, ...posts];
+  return [...routes, ...blogPosts];
 }

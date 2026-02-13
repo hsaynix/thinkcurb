@@ -1,69 +1,88 @@
-﻿import Link from 'next/link';
+﻿"use client"; // 👈 هذا السطر هو الحل! يخبر Next.js أن هذا المكون يحتوي على تفاعل (Interactivity)
 
-/**
- * Footer Component - Clean Lab Style
- * يتم استدعاؤه في layout.js لضمان ظهوره في كل الصفحات.
- */
+import Link from 'next/link';
+
 export default function Footer() {
-  return (
-    <footer className="mt-40 border-t border-slate-100 bg-white relative overflow-hidden">
-      {/* لمسة جمالية: خط أزرق رفيع جداً في أعلى الفوتر */}
-      <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-right from-transparent via-blue-500/20 to-transparent" />
+  const currentYear = new Date().getFullYear();
 
-      <div className="max-w-7xl mx-auto px-8 py-20">
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-16 md:gap-8">
+  // وظيفة العودة للأعلى
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  return (
+    <footer className="bg-white border-t border-slate-100 pt-24 pb-12 relative overflow-hidden">
+      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full h-[500px] bg-gradient-to-t from-blue-50/50 to-transparent -z-10" />
+
+      <div className="max-w-6xl mx-auto px-6">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-20">
           
-          {/* Section 1: Brand Info */}
-          <div className="md:col-span-5 space-y-6">
-            <Link href="/" className="flex items-center gap-3 group">
-              <div className="w-8 h-8 bg-slate-900 rounded-lg flex items-center justify-center font-black text-[12px] text-white transition-all group-hover:bg-blue-600 shadow-sm">
-                TC
-              </div>
-              <span className="font-mono text-base font-bold tracking-tighter text-slate-900">
-                Think<span className="text-blue-600">Curb.</span>
-              </span>
+          <div className="md:col-span-2">
+            <Link href="/" className="text-2xl font-black tracking-tighter text-slate-900 group">
+              THINK<span className="text-blue-600 group-hover:text-blue-500 transition-colors">CURB</span>
             </Link>
-            <p className="text-slate-500 text-sm leading-relaxed max-w-xs font-medium">
-              A specialized laboratory for high-performance web architecture and digital engineering logs.
+            <p className="text-slate-500 mt-6 max-w-sm leading-relaxed text-sm font-medium">
+              A premium space dedicated to modern engineering, AI architectural patterns, and high-end web development insights.
             </p>
+            
+            <div className="mt-8 flex items-center gap-2">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span className="relative"></span>
+              </span>
+             
+            </div>
           </div>
 
-          {/* Section 2: Quick Links */}
-          <div className="md:col-span-3 space-y-6">
-            <h4 className="font-mono text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Navigation_</h4>
+          <div>
+            <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-900 mb-6">Explore</h4>
             <ul className="space-y-4">
-              <li><Link href="/#feed" className="text-sm font-bold text-slate-600 hover:text-blue-600 transition-colors">Feed Logs</Link></li>
-              <li><Link href="/labs" className="text-sm font-bold text-slate-600 hover:text-blue-600 transition-colors">Engineering Labs</Link></li>
-              <li><Link href="/contact" className="text-sm font-bold text-slate-600 hover:text-blue-600 transition-colors">Connect</Link></li>
+              {['AI', 'Coding', 'Architecture'].map((item) => (
+                <li key={item}>
+                  <Link href={`/?category=${item}`} className="text-sm font-bold text-slate-500 hover:text-blue-600 transition-colors">
+                    {item}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 
-          {/* Section 3: System Status & Social */}
-          <div className="md:col-span-4 space-y-6">
-            <h4 className="font-mono text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">System_Status_</h4>
-            <div className="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-3">
-              <div className="flex items-center justify-between">
-                <span className="text-[10px] font-mono font-bold text-slate-500 uppercase">Deployment:</span>
-                <span className="text-[10px] font-mono font-bold text-green-600 uppercase tracking-widest">Active_V2</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-[10px] font-mono font-bold text-slate-500 uppercase">Region:</span>
-                <span className="text-[10px] font-mono font-bold text-slate-900 uppercase tracking-widest">Global_Edge</span>
-              </div>
-            </div>
+          <div>
+            <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-900 mb-6">Platform</h4>
+            <ul className="space-y-4">
+              {[
+                { name: 'About Us', href: '/about' },
+                { name: 'Privacy Policy', href: '/privacy' },
+                { name: 'Terms of Service', href: '/terms' },
+                { name: 'Contact', href: '/contact' }
+              ].map((link) => (
+                <li key={link.name}>
+                  <Link href={link.href} className="text-sm font-bold text-slate-500 hover:text-blue-600 transition-colors">
+                    {link.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
 
-        {/* --- BOTTOM BAR --- */}
-        <div className="mt-20 pt-10 border-t border-slate-50 flex flex-col md:row items-center justify-between gap-6">
-          <div className="font-mono text-[10px] tracking-widest uppercase text-slate-400 font-bold">
-            © 2026 ThinkCurb Labs — Built for the Next Web
+        <div className="pt-8 border-t border-slate-100 flex flex-col md:flex-row justify-between items-center gap-6">
+          <div className="flex items-center gap-4">
+            <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">
+              © {currentYear} ThinkCurb.
+            </p>
           </div>
-          
-          <div className="flex gap-8 font-mono text-[10px] uppercase tracking-widest font-bold">
-            <Link href="/privacy" className="text-slate-400 hover:text-blue-600 transition-colors">Privacy_Policy</Link>
-            <Link href="/terms" className="text-slate-400 hover:text-blue-600 transition-colors">Terminals_Of_Use</Link>
-          </div>
+
+          {/* الزر الذي كان يسبب المشكلة أصبح يعمل الآن */}
+          <button 
+            onClick={scrollToTop}
+            className="group flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-slate-900 hover:text-blue-600 transition-all focus:outline-none"
+          >
+            Back to top
+            <svg className="w-4 h-4 transform group-hover:-translate-y-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 15l7-7 7 7" />
+            </svg>
+          </button>
         </div>
       </div>
     </footer>

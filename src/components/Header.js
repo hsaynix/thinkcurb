@@ -1,83 +1,75 @@
 ﻿"use client";
-
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 
-/**
- * Header Component - Clean Lab Style
- * يتميز بتصميم زجاجي (Backdrop Blur) وتفاعل ذكي مع التمرير.
- */
-export default function Header() {
-  const [isScrolled, setIsScrolled] = useState(false);
+// مكون الشعار المدمج داخلياً لسهولة الإدارة
+const Logo = () => (
+  <Link href="/" className="group flex items-center gap-3">
+    <div className="relative w-10 h-10 flex items-center justify-center">
+      {/* توهج خلفي ناعم */}
+      <div className="absolute inset-0 bg-blue-500 rounded-xl blur-md opacity-0 group-hover:opacity-20 transition-opacity duration-500"></div>
+      
+      {/* أيقونة المربع التقني */}
+      <div className="relative w-9 h-9 bg-slate-900 rounded-xl flex items-center justify-center overflow-hidden border border-slate-800 transition-all duration-500 group-hover:rotate-[135deg] group-hover:rounded-[1rem] shadow-xl shadow-slate-200">
+        <div className="absolute inset-0 opacity-20">
+          <div className="absolute top-1/2 left-0 w-full h-[0.5px] bg-blue-400"></div>
+          <div className="absolute top-0 left-1/2 w-[0.5px] h-full bg-blue-400"></div>
+        </div>
+        <span className="text-blue-400 font-black text-lg group-hover:-rotate-[135deg] transition-transform duration-500">T</span>
+      </div>
+    </div>
 
-  // مراقبة التمرير لتغيير خلفية الهيدر
+    <div className="flex flex-col leading-none">
+      <span className="text-xl font-black tracking-tighter text-slate-900 uppercase">
+        Think<span className="text-blue-600">Curb</span>
+      </span>
+      <span className="text-[7px] font-bold text-slate-400 uppercase tracking-[0.3em] mt-1 group-hover:text-blue-600 transition-colors">
+        Engineering Intelligence
+      </span>
+    </div>
+  </Link>
+);
+
+export default function Header() {
+  const [scrolled, setScrolled] = useState(false);
+
+  // مراقبة التمرير لتغيير شفافية الهيدر
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
-    };
+    const handleScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   return (
-    <nav 
+    <header 
       className={`fixed top-0 w-full z-50 transition-all duration-300 ${
-        isScrolled 
-        ? 'h-16 bg-white/80 backdrop-blur-xl border-b border-slate-100 shadow-sm' 
-        : 'h-24 bg-transparent border-b border-transparent'
+        scrolled 
+          ? 'bg-white/70 backdrop-blur-xl border-b border-slate-100 py-3' 
+          : 'bg-transparent py-5'
       }`}
     >
-      <div className="max-w-7xl mx-auto px-8 h-full flex items-center justify-between">
+      <div className="max-w-6xl mx-auto px-6 flex items-center justify-between">
         
-        {/* --- LOGO AREA --- */}
-        <Link href="/" className="flex items-center gap-3 group">
-          <div className="w-9 h-9 bg-blue-600 rounded-xl flex items-center justify-center font-black text-white transition-all duration-500 group-hover:rotate-[15deg] group-hover:scale-110 shadow-lg shadow-blue-200">
-            TC
-          </div>
-          <span className="font-mono text-lg font-bold tracking-tighter text-slate-900">
-            Think<span className="text-blue-600">Curb.</span>
-          </span>
-        </Link>
+        {/* الشعار */}
+        <Logo />
 
-        {/* --- DESKTOP NAVIGATION --- */}
-        <div className="hidden md:flex items-center gap-10">
-          <div className="flex items-center gap-8 font-mono text-[10px] uppercase tracking-[0.2em] font-bold">
-            <Link 
-              href="/#feed" 
-              className="text-slate-500 hover:text-blue-600 transition-colors relative group"
-            >
-              Feed_
-              <span className="absolute -bottom-1 left-0 w-0 h-[1px] bg-blue-600 transition-all group-hover:w-full" />
-            </Link>
-            
-            <Link 
-              href="/labs" 
-              className="text-slate-500 hover:text-blue-600 transition-colors relative group"
-            >
-              Labs_
-              <span className="absolute -bottom-1 left-0 w-0 h-[1px] bg-blue-600 transition-all group-hover:w-full" />
-            </Link>
-          </div>
+        {/* أزرار التنقل (يمين) */}
+        <div className="flex items-center gap-8">
+          {/* رابط مخفي في الشاشات الصغيرة لجعل الهيدر بسيطاً جداً */}
+         
 
-          {/* CTA Button */}
+          {/* زر التواصل الرئيسي */}
           <Link 
             href="/contact" 
-            className="px-6 py-2 bg-slate-900 text-white text-[10px] font-mono font-black uppercase tracking-widest rounded-full hover:bg-blue-600 transition-all shadow-md active:scale-95"
+            className="relative group overflow-hidden bg-slate-900 text-white px-6 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all hover:shadow-[0_10px_20px_-10px_rgba(37,99,235,0.4)] active:scale-95"
           >
-            Connect.
+            {/* طبقة خلفية تتحرك عند الـ Hover */}
+            <div className="absolute inset-0 bg-blue-600 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
+            
+            <span className="relative z-10">Get in Touch</span>
           </Link>
         </div>
-
-        {/* --- MOBILE TOGGLE (Simple Version) --- */}
-        <div className="md:hidden">
-          <button className="p-2 text-slate-900">
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
-            </svg>
-          </button>
-        </div>
-
       </div>
-    </nav>
+    </header>
   );
 }
