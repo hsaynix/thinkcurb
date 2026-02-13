@@ -4,26 +4,29 @@ import Giscus from '@giscus/react';
 
 export default function Comments() {
   return (
-    <section className="mt-20 pt-20 border-t border-slate-100">
-      <div className="mb-10 flex items-center gap-4">
-        <h3 className="font-mono text-[10px] font-black uppercase tracking-[0.4em] text-blue-600">
-          // Engineering_Discussions
+    <section className="mt-20 pt-10 border-t border-gray-100">
+      {/* عنوان قسم التعليقات بستايل المدونة العادي الأنيق */}
+      <div className="mb-10">
+        <h3 className="text-xl font-bold text-gray-900 tracking-tight">
+          Comments & Discussion
         </h3>
-        <div className="h-[1px] flex-1 bg-slate-50" />
+        <p className="text-sm text-gray-500 mt-1">
+          Join the conversation using your GitHub account.
+        </p>
       </div>
       
       <Giscus
         id="comments-protocol"
-        repo="YOUR_GITHUB_USERNAME/YOUR_REPO_NAME" // استبدلها برابط مستودعك
-        repoId="YOUR_REPO_ID"
-        category="General"
-        categoryId="YOUR_CATEGORY_ID"
-        mapping="pathname"
-        term="Welcome to the Lab!"
+        repo="hsaynix/thinkcurb"           // المستودع الخاص بك
+        repoId="R_kgDORPiUeg"             // المعرف المستخرج
+        category="General"                // القسم المختار
+        categoryId="DIC_kwDORPiUes4C2XHM" // معرف القسم المستخرج
+        mapping="pathname"                // ربط التعليقات بعنوان كل مقال
+        strict="0"
         reactionsEnabled="1"
         emitMetadata="0"
-        inputPosition="top"
-        theme="light" // متوافق مع الثيم الأبيض والأزرق
+        inputPosition="bottom"            // وضع صندوق الكتابة في الأسفل
+        theme="preferred_color_scheme"    // يتغير تلقائياً حسب وضع جهاز القارئ
         lang="en"
         loading="lazy"
       />
