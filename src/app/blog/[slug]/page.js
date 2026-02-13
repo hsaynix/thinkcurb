@@ -1,100 +1,107 @@
-﻿import { getPostData, getSortedPostsData } from '@/lib/posts';
-import Link from 'next/link';
-import { notFound } from 'next/navigation';
+﻿// src/app/blog/[slug]/page.js
+import { getPostBySlug, getAllPosts } from '@/lib/posts';
 import Comments from '@/components/Comments';
+import { notFound } from 'next/navigation';
 
-// إعدادات الـ SEO لتبدو المقالة احترافية في محركات البحث
+// توليد المسارات الثابتة (Static Params) لتحسين سرعة الموقع (SEO)
+export async function generateStaticParams() {
+  const posts = getAllPosts();
+  return posts.map((post) => ({
+    slug: post.slug,
+  }));
+}
+
+// دالة توليد بيانات الـ Meta لكل مقال بشكل ديناميكي
 export async function generateMetadata({ params }) {
-  const { slug } = await params;
-  const post = await getPostData(slug);
+  const { slug } = params;
+  const post = getPostBySlug(slug);
+  
   if (!post) return { title: 'Post Not Found' };
 
   return {
-    title: post.title,
+    title: `${post.title} | ThinkCurb`,
     description: post.description,
   };
 }
 
-// توليد الصفحات مسبقاً (SSG) لسرعة التصفح
-export async function generateStaticParams() {
-  const posts = getSortedPostsData();
-  return posts.map((post) => ({ slug: post.id }));
-}
+export default async function Post({ params }) {
+  const { slug } = params;
+  const post = getPostBySlug(slug);
 
-export default async function PostPage({ params }) {
-  const { slug } = await params; 
-  const postData = await getPostData(slug);
-
-  if (!postData) notFound();
+  // إذا لم يتم العثور على المقال، أظهر صفحة 404
+  if (!post) {
+    notFound();
+  }
 
   return (
-    <main className="min-h-screen bg-[#FDFCFB] text-[#1a1a1a] antialiased">
-      {/* شريط علوي بسيط للعودة للرئيسية */}
-      <nav className="max-w-3xl mx-auto px-6 py-8 flex justify-between items-center border-b border-gray-100">
-        <Link href="/" className="font-bold text-xl tracking-tight">
-          ThinkCurb<span className="text-gray-400">.</span>
-        </Link>
-        <Link href="/" className="text-sm text-gray-500 hover:text-black transition-colors">
-          Back to Feed
-        </Link>
-      </nav>
+    <article className="max-w-4xl mx-auto px-4 py-12">
+      
+      {/* --- رأس المقال (Article Header) --- */}
+      <header className="mb-16 text-center">
+        <div className="flex justify-center items-center gap-3 mb-8">
+          <span className="px-4 py-1.5 rounded-full bg-blue-50 text-blue-600 text-[10px] font-black uppercase tracking-widest">
+            {post.category}
+          </span>
+          <span className="text-slate-300">•</span>
+          <time className="text-xs font-bold text-slate-400 uppercase tracking-tighter">
+            {post.date}
+          </time>
+        </div>
 
-      {/* محتوى المقال */}
-      <article className="max-w-3xl mx-auto px-6 py-20">
+        <h1 className="text-4xl md:text-6xl font-black text-slate-900 leading-[1.1] mb-12 tracking-tight">
+          {post.title}
+        </h1>
+
+        {/* صورة الغلاف */}
+        <div className="relative h-[300px] md:h-[550px] w-full overflow-hidden rounded-[2.5rem] shadow-2xl shadow-blue-100/50">
+          <img
+            src={post.image || '/images/posts/default.jpg'}
+            alt={post.title}
+            className="w-full h-full object-cover"
+          />
+        </div>
+      </header>
+
+      {/* --- محتوى المقال (Article Content) --- */}
+      <div className="flex flex-col md:flex-row gap-12 relative">
         
-        {/* رأس المقال (Title & Meta) */}
-        <header className="mb-16">
-          <div className="flex items-center gap-3 text-sm text-gray-500 mb-6 font-medium">
-            <span className="uppercase tracking-widest">{postData.category}</span>
-            <span>•</span>
-            <time>{postData.date}</time>
+        {/* شريط جانبي صغير (اختياري - لمعلومات الكاتب) */}
+        <aside className="md:w-1/4 flex flex-col gap-6 border-l border-slate-50 pl-8">
+          <div className="sticky top-24">
+            <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-4">Written By</h4>
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-slate-900 flex items-center justify-center text-white font-bold text-xs">
+                HA
+              </div>
+              <span className="text-sm font-bold text-slate-900">Abdelaziz</span>
+            </div>
+            <div className="mt-10 h-[1px] w-12 bg-blue-600" />
           </div>
-          <h1 className="text-4xl md:text-5xl font-serif font-bold leading-tight mb-8">
-            {postData.title}
-          </h1>
-          {postData.description && (
-            <p className="text-xl text-gray-500 italic leading-relaxed">
-              {postData.description}
-            </p>
-          )}
-        </header>
+        </aside>
 
-        {/* الصورة الرئيسية (إذا وجدت) */}
-        {postData.image && (
-          <div className="mb-16 rounded-2xl overflow-hidden shadow-sm">
-            <img 
-              src={postData.image} 
-              alt={postData.title} 
-              className="w-full h-auto object-cover"
-            />
+        {/* النص الرئيسي باستخدام Tailwind Typography */}
+        <div className="md:w-3/4">
+          <div 
+            className="prose prose-lg prose-slate max-w-none 
+            prose-headings:font-black prose-headings:text-slate-900 prose-headings:tracking-tight
+            prose-p:leading-relaxed prose-p:text-slate-600 prose-p:font-light
+            prose-a:text-blue-600 prose-a:no-underline hover:prose-a:underline
+            prose-strong:font-bold prose-strong:text-slate-900
+            prose-blockquote:border-l-4 prose-blockquote:border-blue-600 prose-blockquote:bg-blue-50 prose-blockquote:py-2 prose-blockquote:rounded-r-xl prose-blockquote:not-italic"
+            dangerouslySetInnerHTML={{ __html: post.content }} 
+          />
+
+          {/* --- قسم التعليقات (Giscus) --- */}
+          <div className="mt-24 border-t border-slate-100 pt-16">
+             <div className="mb-10">
+                <h3 className="text-2xl font-black text-slate-900 mb-2">النقاشات والأفكار</h3>
+                <p className="text-sm text-slate-500">شاركنا رأيك حول هذا الموضوع عبر حسابك في GitHub.</p>
+             </div>
+             <Comments />
           </div>
-        )}
+        </div>
+      </div>
 
-        {/* جسم المقال (Content) */}
-        <div 
-          className="prose prose-lg prose-gray max-w-none 
-                     prose-headings:font-sans prose-headings:font-bold prose-headings:tracking-tight
-                     prose-p:font-serif prose-p:text-gray-800 prose-p:leading-extra-relaxed
-                     prose-a:text-blue-600 prose-a:no-underline hover:prose-a:underline
-                     prose-pre:bg-gray-50 prose-pre:border prose-pre:border-gray-100 prose-pre:text-gray-800"
-          dangerouslySetInnerHTML={{ __html: postData.contentHtml }} 
-        />
-
-        {/* تذييل المقال ونظام التعليقات */}
-        <footer className="mt-24 pt-12 border-t border-gray-100">
-          <div className="mb-12 text-center">
-            <p className="text-gray-400 text-sm mb-4 font-medium uppercase tracking-widest">Discussion</p>
-            <h3 className="text-2xl font-bold mb-8">What do you think?</h3>
-          </div>
-          
-          <Comments />
-        </footer>
-      </article>
-
-      {/* تذييل الصفحة البسيط */}
-      <footer className="max-w-3xl mx-auto px-6 py-20 text-center border-t border-gray-100 text-gray-400 text-sm">
-        © {new Date().getFullYear()} ThinkCurb Blog. Built with Next.js.
-      </footer>
-    </main>
+    </article>
   );
 }
